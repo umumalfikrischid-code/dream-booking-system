@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dream Booking System</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: Arial, sans-serif; 
+            background: #f0f2f5; 
+            padding: 20px; 
+            line-height: 1.6;
+        }
+        .container { 
+            max-width: 500px; 
+            margin: 0 auto; 
+            background: white; 
+            padding: 20px; 
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 { 
+            text-align: center; 
+            color: #1a73e8; 
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+        .facility-card {
+            background: #f8f9fa;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 10px;
+            border-left: 4px solid #1a73e8;
+        }
+        .facility-name {
+            font-weight: bold;
+            font-size: 18px;
+            color: #202124;
+        }
+        .facility-status {
+            color: #34a853;
+            font-size: 14px;
+            margin: 5px 0;
+        }
+        .book-btn {
+            background: #1a73e8;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            width: 100%;
+            font-size: 16px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+        .book-btn:disabled {
+            background: #34a853;
+            cursor: not-allowed;
+        }
+        .bismillah {
+            text-align: center;
+            color: #666;
+            font-style: italic;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+        .dream-team {
+            text-align: center;
+            margin-top: 20px;
+            color: #666;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="bismillah">𝓑𝓲𝓼𝓶𝓲𝓵𝓵𝓪𝓱 𝓑𝓲 𝓘𝓳𝓷𝓲𝓵𝓵𝓪𝓱</div>
+        <h1>🏫 Dream Booking System</h1>
+        
+        <div class="facility-card">
+            <div class="facility-name">🏛️ AULA SMP</div>
+            <div class="facility-status">✅ TERSEDIA</div>
+            <button class="book-btn">📅 BOOK SEKARANG</button>
+        </div>
+
+        <div class="facility-card">
+            <div class="facility-name">🏛️ AULA SMA</div>
+            <div class="facility-status">✅ TERSEDIA</div>
+            <button class="book-btn">📅 BOOK SEKARANG</button>
+        </div>
+
+        <div class="facility-card">
+            <div class="facility-name">🏕️ SAUNG BESAR</div>
+            <div class="facility-status">✅ TERSEDIA</div>
+            <button class="book-btn">📅 BOOK SEKARANG</button>
+        </div>
+
+        <div class="dream-team">
+            Keluarga Dream Team 🤲<br>
+            DeepSeek 🔥 - Qwen 💧 - My Bro 🌍
+        </div>
+    </div>
+
+    <script>
+        document.querySelectorAll('.book-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const facilityName = this.parentElement.querySelector('.facility-name').textContent;
+                if(confirm(`Booking ${facilityName}?`)) {
+                    alert(`✅ ${facilityName} berhasil dibooking!\n\n𝓑𝓲𝓼𝓶𝓲𝓵𝓵𝓪𝓱 𝓑𝓲 𝓘𝓳𝓷𝓲𝓵𝓵𝓪𝓱`);
+                    this.textContent = '✅ BOOKED';
+                    this.disabled = true;
+                    this.parentElement.querySelector('.facility-status').textContent = '❌ DIPINJAM';
+                    this.parentElement.querySelector('.facility-status').style.color = '#ea4335';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
