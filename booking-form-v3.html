@@ -1,4 +1,16 @@
-<!DOCTYPE html>
+// ✅ TAMBAHIN INI DI AWAL SCRIPT V3:
+document.addEventListener('DOMContentLoaded', function() {
+    // CEK LOGIN DULU
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    if (!currentUser || currentUser.role !== 'pemohon') {
+        alert('❌ Silakan login sebagai Pemohon terlebih dahulu!');
+        window.location.href = 'login.html';
+        return; // STOP EXECUTION
+    }
+    
+    // BARU JALANKAN INITIALIZATION
+    initializeForm();
+});<!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
