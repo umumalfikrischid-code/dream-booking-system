@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Booking v3 - SIF Al Fikri</title>
+    <style>
+        * { 
+            margin: 0; padding: 0; box-sizing: border-box; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+        }
+        
+        body { 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+            min-height: 100vh; 
+            padding: 20px;
+        }
+        
+        .container { 
+            max-width: 800px; 
+            margin: 0 auto; 
+            background: white; 
+            padding: 30px; 
+            border-radius: 15px; 
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        .header { 
+            text-align: center; 
+            margin-bottom: 30px; 
+            padding-bottom: 20px;
+            border-bottom: 2px solid #1a73e8;
+        }
+        
+        .header h1 { 
+            color: #2c3e50; 
+            margin-bottom: 10px; 
+        }
+        
+        .form-group { 
+            margin-bottom: 20px; 
+        }
+        
+        label { 
+            display: block; 
+            margin-bottom: 8px; 
+            font-weight: 600; 
+            color: #2c3e50;
+        }
+        
+        input, select, textarea { 
+            width: 100%; 
+            padding: 12px 15px; 
+            border: 2px solid #e0e0e0; 
+            border-radius: 8px; 
+            font-size: 14px; 
+            transition: all 0.3s ease;
+        }
+        
+        input:focus, select:focus, textarea:focus { 
+            outline: none; 
+            border-color: #3498db; 
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+        
+        .btn { 
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%); 
+            color: white; 
+            padding: 15px 30px; 
+            border: none; 
+            border-radius: 8px; 
+            font-size: 16px; 
+            font-weight: 600; 
+            cursor: pointer; 
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+        
+        .btn:hover { 
+            transform: translateY(-2px); 
+            box-shadow: 0 10px 20px rgba(39, 174, 96, 0.3);
+        }
+
+        /* Signature Styles */
+        .signature-container {
+            margin: 15px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border: 2px dashed #bdc3c7;
+        }
+
+        .signature-canvas {
+            width: 100%;
+            height: 150px;
+            border: 2px solid #3498db;
+            border-radius: 8px;
+            background: white;
+            cursor: crosshair;
+            touch-action: none;
+        }
+
+        .signature-controls {
+            margin-top: 10px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .btn-clear {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .validation {
+            font-size: 12px;
+            margin-top: 5px;
+            padding: 5px 8px;
+            border-radius: 4px;
+            display: none;
+        }
+
+        .validation.valid {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .validation.invalid {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        /* Equipment Table */
+        .equipment-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .equipment-table th {
+            background: #3498db;
+            color: white;
+            padding: 12px 8px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .equipment-table td {
+            padding: 10px 8px;
+            border-bottom: 1px solid #ecf0f1;
+        }
+
+        /* Qwen's Enhanced Styles */
+        .valid-field {
+            border-color: #28a745 !important;
+            box-shadow: 0 0 0 2px rgba(40, 167, 69, 0.25) !important;
+        }
+
+        .invalid-field {
+            border-color: #dc3545 !important;
+            box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.25) !important;
+        }
+
+        .friday-alert {
+            background: #ff6b6b;
+            color: white;
+            padding: 10px;
+            border-radius: 6px;
+            margin: 10px 0;
+            display: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px 15px;
+            }
+            
+            .signature-canvas {
+                height: 120px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📅 Form Booking Sarana v3 - HYBRID</h1>
+            <p>SIF Al Fikri - The Dream Team Edition</p>
+        </div>
+
+        <form id="bookingForm">
+            <!-- QWEN'S WA VALIDATION -->
+            <div class="form-group">
+                <label for="contact_wa">📱 Nomor WhatsApp</label>
+                <input type="tel" id="contact_wa" required placeholder="081234567890 (auto-convert ke +62)">
+                <div id="waValidation" class="validation"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="kegiatan">📝 Nama Kegiatan</label>
+                <input type="text" id="kegiatan" required placeholder="Contoh: Seminar Parenting">
+            </div>
+
+            <!-- QWEN'S FRIDAY AUTO-DETECTION -->
+            <div class="form-group">
+                <label for="tanggal">📅 Tanggal Kegiatan</label>
+                <input type="date" id="tanggal" required>
+            </div>
+
+            <div class="form-group">
+                <label for="waktu_mulai">⏰ Waktu Mulai</label>
+                <select id="waktu_mulai" required>
+                    <option value="">Pilih Waktu Mulai</option>
+                    <option value="07:30">07:30</option>
+                    <option value="08:00">08:00</option>
+                    <option value="08:30">08:30</option>
+                    <option value="09:00">09:00</option>
+                    <option value="09:30">09:30</option>
+                    <option value="10:00">10:00</option>
+                    <option value="10:30">10:30</option>
+                    <option value="11:00">11:00</option>
+                    <option value="11:30">11:30</option>
+                    <option value="12:00">12:00</option>
+                    <option value="12:30">12:30</option>
+                    <option value="13:00">13:00</option>
+                    <option value="13:30">13:30</option>
+                    <option value="14:00">14:00</option>
+                    <option value="14:30">14:30</option>
+                    <option value="15:00">15:00</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="waktu_selesai">⏱️ Waktu Selesai</label>
+                <select id="waktu_selesai" required>
+                    <option value="">Pilih Waktu Selesai</option>
+                    <option value="08:00">08:00</option>
+                    <option value="08:30">08:30</option>
+                    <option value="09:00">09:00</option>
+                    <option value="09:30">09:30</option>
+                    <option value="10:00">10:00</option>
+                    <option value="10:30">10:30</option>
+                    <option value="11:00">11:00</option>
+                    <option value="11:30">11:30</option>
+                    <option value="12:00">12:00</option>
+                    <option value="12:30">12:30</option>
+                    <option value="13:00">13:00</option>
+                    <option value="13:30">13:30</option>
+                    <option value="14:00">14:00</option>
+                    <option value="14:30">14:30</option>
+                    <option value="15:00">15:00</option>
+                    <option value="15:30">15:30</option>
+                    <option value="16:00">16:00</option>
+                </select>
+            </div>
+
+            <!-- DSEEK'S SARANA + QWEN'S FRIDAY RESTRICTIONS -->
+            <div class="form-group">
+                <label for="sarana">🏛️ Sarana yang Dipesan</label>
+                <select id="sarana" required>
+                    <option value="">-- Pilih Sarana --</option>
+                    <!-- Generated by JavaScript -->
+                </select>
+                <div id="saranaError" class="validation"></div>
+                <div id="fridayAlert" class="friday-alert"></div>
+            </div>
+
+            <!-- QWEN'S EQUIPMENT MANAGEMENT -->
+            <div class="form-group">
+                <label>🛠️ Perlengkapan Tambahan</label>
+                <table class="equipment-table">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Nama Barang</th>
+                            <th>Jumlah</th>
+                            <th>Keterangan</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="equipmentBody">
+                        <!-- Generated by JavaScript -->
+                    </tbody>
+                </table>
+                <button type="button" onclick="addEquipmentRow()" style="margin-top: 10px; padding: 10px; background: #3498db; color: white; border: none; border-radius: 6px; cursor: pointer;">
+                    ➕ Tambah Barang
+                </button>
+            </div>
+
+            <!-- QWEN'S TOUCH SIGNATURE SYSTEM -->
+            <div class="form-group">
+                <label>✍️ Tanda Tangan Digital (3 Level Approval)</label>
+                
+                <div class="signature-container">
+                    <label><strong>Kepala Sekolah</strong></label>
+                    <canvas id="kepsekSignature" class="signature-canvas"></canvas>
+                    <div class="signature-controls">
+                        <button type="button" onclick="clearSignature('kepsekSignature')" class="btn-clear">
+                            🧹 Hapus
+                        </button>
+                        <small>Gunakan mouse/touch untuk tanda tangan</small>
+                    </div>
+                    <div id="kepsekValidation" class="validation">❌ Tanda tangan diperlukan</div>
+                </div>
+
+                <div class="signature-container">
+                    <label><strong>Kepala Bidang Umum</strong></label>
+                    <canvas id="kabidSignature" class="signature-canvas"></canvas>
+                    <div class="signature-controls">
+                        <button type="button" onclick="clearSignature('kabidSignature')" class="btn-clear">
+                            🧹 Hapus
+                        </button>
+                        <small>Gunakan mouse/touch untuk tanda tangan</small>
+                    </div>
+                    <div id="kabidValidation" class="validation">❌ Tanda tangan diperlukan</div>
+                </div>
+
+                <div class="signature-container">
+                    <label><strong>Penanggung Jawab</strong></label>
+                    <canvas id="penanggungJawabSignature" class="signature-canvas"></canvas>
+                    <div class="signature-controls">
+                        <button type="button" onclick="clearSignature('penanggungJawabSignature')" class="btn-clear">
+                            🧹 Hapus
+                        </button>
+                        <small>Gunakan mouse/touch untuk tanda tangan</small>
+                    </div>
+                    <div id="penanggungJawabValidation" class="validation">❌ Tanda tangan diperlukan</div>
+                </div>
+            </div>
+
+            <button type="submit" class="btn">🚀 Ajukan Booking</button>
+        </form>
+    </div>
+
+    <script>
+        // === DREAM TEAM V3 HYBRID - ALL FEATURES INTEGRATED ===
+
+        // 1. SARANA DATA (DSEEK'S STRUCTURE)
+        const facilities = [
+            { id: 'aula-smp', name: '🏛️ Aula SMP', category: 'aula' },
+            { id: 'aula-sma', name: '🏛️ Aula SMA', category: 'aula' },
+            { id: 'saung-besar', name: '🌴 Saung Besar', category: 'saung' },
+            { id: 'saung-kecil', name: '🌴 Saung Kecil', category: 'saung' },
+            { id: 'lapangan-basket', name: '🏀 Lapangan Basket', category: 'lapangan' },
+            { id: 'lapangan-futsal', name: '⚽ Lapangan Futsal', category: 'lapangan' },
+            { id: 'lapangan-voli', name: '🏐 Lapangan Voli', category: 'lapangan' },
+            { id: 'ruang-serbaguna', name: '🧰 Ruang Serbaguna', category: 'ruang' },
+            { id: 'masjid', name: '🕌 Masjid', category: 'umum' },
+            { id: 'taman-masjid', name: '🌳 Taman Depan Masjid', category: 'umum' },
+            { id: 'kantin-smp', name: '🍱 Kantin SMP', category: 'kantin' },
+            { id: 'perpustakaan-sd', name: '📚 Perpustakaan SD', category: 'perpus' },
+            { id: 'perpustakaan-smp', name: '📚 Perpustakaan SMP', category: 'perpus' },
+            { id: 'perpustakaan-sma', name: '📚 Perpustakaan SMA', category: 'perpus' },
+            { id: 'labkom-sd', name: '💻 Lab Komputer SD', category: 'lab' },
+            { id: 'labkom-smp', name: '💻 Lab Komputer SMP', category: 'lab' },
+            { id: 'labkom-sma', name: '💻 Lab Komputer SMA', category: 'lab' },
+            { id: 'playground', name: '🎠 Playground', category: 'umum' }
+        ];
+
+        // 2. EQUIPMENT DATA (QWEN'S STRUCTURE)
+        const EQUIPMENT_OPTIONS = [
+            { value: 'speaker-baretone', label: 'Speaker Portable Baretone' },
+            { value: 'mic-standing', label: 'Standing Microphone' },
+            { value: 'mic-handheld', label: 'Mic Handheld' },
+            { value: 'projector-mobile', label: 'Projector Mobile' },
+            { value: 'tv-smart', label: 'TV + Smart Box' },
+            { value: 'screen-projector', label: 'Screen Projector' },
+            { value: 'meja-panjang', label: 'Meja Panjang' },
+            { value: 'kursi-futura', label: 'Kursi Futura' },
+            { value: 'custom', label: '✚ Tambah Barang Custom' }
+        ];
+
+        // 3. QWEN'S TOUCH SIGNATURE SYSTEM
+        const signatureCanvases = {};
+
+        function initializeSignature(canvasId) {
+            const canvas = document.getElementById(canvasId);
+            const ctx = canvas.getContext('2d');
+            let isDrawing = false;
+            let lastX = 0, lastY = 0;
+
+            function resizeCanvas() {
+                const displayWidth = canvas.clientWidth;
+                const displayHeight = canvas.clientHeight;
+                if (canvas.width !== displayWidth || canvas.height !== displayHeight) {
+                    canvas.width = displayWidth;
+                    canvas.height = displayHeight;
+                    ctx.lineWidth = 2.5;
+                    ctx.lineCap = 'round';
+                    ctx.lineJoin = 'round';
+                    ctx.strokeStyle = '#2c3e50';
+                    ctx.fillStyle = '#ffffff';
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                }
+            }
+            resizeCanvas();
+
+            function getPointerPos(e) {
+                let clientX, clientY;
+                if (e.type.startsWith('touch')) {
+                    const touch = e.touches[0] || e.changedTouches[0];
+                    clientX = touch.clientX;
+                    clientY = touch.clientY;
+                } else {
+                    clientX = e.clientX;
+                    clientY = e.clientY;
+                }
+                const rect = canvas.getBoundingClientRect();
+                return {
+                    x: clientX - rect.left,
+                    y: clientY - rect.top
+                };
+            }
+
+            function handleStart(e) {
+                e.preventDefault();
+                const pos = getPointerPos(e);
+                isDrawing = true;
+                [lastX, lastY] = [pos.x, pos.y];
+                ctx.beginPath();
+                ctx.moveTo(lastX, lastY);
+            }
+
+            function handleMove(e) {
+                if (!isDrawing) return;
+                e.preventDefault();
+                const pos = getPointerPos(e);
+                ctx.lineTo(pos.x, pos.y);
+                ctx.stroke();
+                [lastX, lastY] = [pos.x, pos.y];
+            }
+
+            function handleEnd() {
+                isDrawing = false;
+                validateSignature(canvasId);
+            }
+
+            // Event listeners dengan Qwen's touch optimization
+            canvas.addEventListener('mousedown', handleStart);
+            canvas.addEventListener('mousemove', handleMove);
+            canvas.addEventListener('mouseup', handleEnd);
+            canvas.addEventListener('mouseleave', handleEnd);
+
+            canvas.addEventListener('touchstart', handleStart, { passive: false });
+            canvas.addEventListener('touchmove', handleMove, { passive: false });
+            canvas.addEventListener('touchend', handleEnd);
+
+            signatureCanvases[canvasId] = ctx;
+        }
+
+        function clearSignature(canvasId) {
+            const ctx = signatureCanvases[canvasId];
+            if (ctx) {
+                const canvas = document.getElementById(canvasId);
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                validateSignature(canvasId);
+            }
+        }
+
+        function validateSignature(canvasId) {
+            const ctx = signatureCanvases[canvasId];
+            if (!ctx) return false;
+            
+            const canvas = document.getElementById(canvasId);
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const hasSignature = imageData.data.some(channel => channel !== 255);
+            
+            const validationEl = document.getElementById(`${canvasId}Validation`);
+            if (validationEl) {
+                if (hasSignature) {
+                    validationEl.textContent = '✅ Tanda tangan valid';
+                    validationEl.className = 'validation valid';
+                } else {
+                    validationEl.textContent = '❌ Tanda tangan diperlukan';
+                    validationEl.className = 'validation invalid';
+                }
+            }
+            
+            return hasSignature;
+        }
+
+        function validateAllSignatures() {
+            const signatureIds = ['kepsekSignature', 'kabidSignature', 'penanggungJawabSignature'];
+            return signatureIds.every(validateSignature);
+        }
+
+        // 4. QWEN'S WA VALIDATION WITH AUTO-CONVERSION
+        document.getElementById('contact_wa').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/[^\d+]/g, '');
+            
+            // QWEN'S AUTO-CONVERSION: 08xx → +628xx
+            if (value.startsWith('0') && !value.startsWith('+62')) {
+                value = '+62' + value.substring(1);
+            }
+            
+            if (value.startsWith('+62')) {
+                const digits = value.substring(3);
+                if (digits.length >= 9 && digits.length <= 12) {
+                    showValidation('waValidation', '✅ Nomor WhatsApp valid', 'valid');
+                    this.classList.add('valid-field');
+                    this.classList.remove('invalid-field');
+                    e.target.value = value; // Apply converted value
+                    return;
+                }
+            }
+            
+            showValidation('waValidation', '❌ Format: 081234567890 → +6281234567890', 'invalid');
+            this.classList.add('invalid-field');
+            this.classList.remove('valid-field');
+        });
+
+        function showValidation(elementId, message, type) {
+            const div = document.getElementById(elementId);
+            div.textContent = message;
+            div.className = `validation ${type}`;
+            div.style.display = 'block';
+        }
+
+        // 5. QWEN'S FRIDAY RESTRICTIONS WITH AUTO-DAY DETECTION
+        function checkFridayRestrictions() {
+            const tanggalInput = document.getElementById('tanggal');
+            const waktuMulai = document.getElementById('waktu_mulai').value;
+            const waktuSelesai = document.getElementById('waktu_selesai').value;
+            const saranaSelect = document.getElementById('sarana');
+
+            if (!tanggalInput.value || !waktuMulai || !waktuSelesai) return;
+
+            // QWEN'S AUTO DETECTION - No manual select needed!
+            const tanggal = new Date(tanggalInput.value);
+            const isFriday = tanggal.getDay() === 5;
+            
+            const restrictedSarana = ['aula-smp', 'ruang-serbaguna'];
+            const jumatStart = '10:30';
+            const jumatEnd = '13:00';
+
+            if (isFriday) {
+                const conflict = isTimeOverlap(waktuMulai, waktuSelesai, jumatStart, jumatEnd);
+                
+                // Update UI based on conflict
+                restrictedSarana.forEach(saranaId => {
+                    const option = Array.from(saranaSelect.options).find(opt => opt.value === saranaId);
+                    if (option) {
+                        option.disabled = conflict;
+                        option.style.color = conflict ? '#95a5a6' : '';
+                        option.style.textDecoration = conflict ? 'line-through' : '';
+                    }
+                });
+
+                // Show/hide alert
+                const alertDiv = document.getElementById('fridayAlert');
+                if (conflict) {
+                    alertDiv.innerHTML = '🕌 <strong>INFORMASI JUMAT:</strong> Aula SMP & Serbaguna tidak tersedia jam 10.30-13.00 WIB';
+                    alertDiv.style.display = 'block';
+                    
+                    // Reset if user selected restricted facility
+                    if (restrictedSarana.includes(saranaSelect.value)) {
+                        saranaSelect.value = '';
+                        showValidation('saranaError', '❌ Sarana tidak tersedia di jam tersebut', 'invalid');
+                    }
+                } else {
+                    alertDiv.style.display = 'none';
+                }
+            } else {
+                // Enable all on other days
+                restrictedSarana.forEach(saranaId => {
+                    const option = Array.from(saranaSelect.options).find(opt => opt.value === saranaId);
+                    if (option) {
+                        option.disabled = false;
+                        option.style.color = '';
+                        option.style.textDecoration = '';
+                    }
+                });
+                document.getElementById('fridayAlert').style.display = 'none';
+            }
+        }
+
+        function isTimeOverlap(start1, end1, start2, end2) {
+            const toMinutes = (timeStr) => {
+                const [h, m] = timeStr.split(':').map(Number);
+                return h * 60 + m;
+            };
+            const s1 = toMinutes(start1);
+            const e1 = toMinutes(end1);
+            const s2 = toMinutes(start2);
+            const e2 = toMinutes(end2);
+            return s1 < e2 && e1 > s2;
+        }
+
+        // 6. QWEN'S EQUIPMENT MANAGEMENT
+        function addEquipmentRow() {
+            const tbody = document.getElementById('equipmentBody');
+            const newRow = document.createElement('tr');
+            const rowNumber = tbody.children.length + 1;
+
+            let optionsHTML = '<option value="">-- Pilih Perlengkapan --</option>';
+            EQUIPMENT_OPTIONS.forEach(opt => {
+                optionsHTML += `<option value="${opt.value}">${opt.label}</option>`;
+            });
+
+            newRow.innerHTML = `
+                <td>${rowNumber}</td>
+                <td>
+                    <select class="equipment-select" onchange="handleEquipmentSelect(this)" 
+                            style="width: 100%; padding: 8px; border: 2px solid #e0e0e0; border-radius: 6px;">
+                        ${optionsHTML}
+                    </select>
+                    <input type="text" class="equipment-custom" placeholder="Ketik nama barang custom..." 
+                           style="display: none; margin-top: 8px; width: 100%; padding: 8px; 
+                                  border: 2px solid #3498db; border-radius: 6px;">
+                </td>
+                <td>
+                    <input type="number" class="equipment-qty" placeholder="0" min="1" value="1" 
+                           style="width: 80px; padding: 8px; border: 2px solid #e0e0e0; border-radius: 6px;">
+                </td>
+                <td>
+                    <input type="text" class="equipment-desc" placeholder="Keterangan opsional..." 
+                           style="width: 100%; padding: 8px; border: 2px solid #e0e0e0; border-radius: 6px;">
+                </td>
+                <td>
+                    <button type="button" onclick="removeEquipmentRow(this)" 
+                            style="background: #e74c3c; color: white; border: none; border-radius: 6px; 
+                                   padding: 8px 12px; cursor: pointer; font-size: 12px;">
+                        🗑️ Hapus
+                    </button>
+                </td>
+            `;
+            
+            tbody.appendChild(newRow);
+        }
+
+        function handleEquipmentSelect(selectEl) {
+            const customInput = selectEl.parentElement.querySelector('.equipment-custom');
+            if (selectEl.value === 'custom') {
+                customInput.style.display = 'block';
+                customInput.required = true;
+                customInput.focus();
+            } else {
+                customInput.style.display = 'none';
+                customInput.required = false;
+                customInput.value = '';
+            }
+        }
+
+        function removeEquipmentRow(button) {
+            const row = button.closest('tr');
+            const tbody = document.getElementById('equipmentBody');
+            if (tbody.children.length <= 1) {
+                alert('❌ Minimal harus ada 1 baris perlengkapan!');
+                return;
+            }
+            row.remove();
+            // Re-number rows
+            const rows = document.querySelectorAll('#equipmentBody tr');
+            rows.forEach((row, index) => {
+                row.cells[0].textContent = index + 1;
+            });
+        }
+
+        function collectEquipmentData() {
+            const equipment = [];
+            const rows = document.querySelectorAll('#equipmentBody tr');
+            
+            rows.forEach(row => {
+                const select = row.querySelector('.equipment-select');
+                const customInput = row.querySelector('.equipment-custom');
+                const qtyInput = row.querySelector('.equipment-qty');
+                const descInput = row.querySelector('.equipment-desc');
+                
+                let itemName = '';
+                
+                if (select.value === 'custom' && customInput) {
+                    itemName = customInput.value.trim();
+                } else if (select.value) {
+                    const foundItem = EQUIPMENT_OPTIONS.find(item => item.value === select.value);
+                    itemName = foundItem ? foundItem.label : select.value;
+                }
+                
+                const quantity = parseInt(qtyInput.value) || 0;
+                const description = descInput ? descInput.value.trim() : '';
+                
+                if (itemName && quantity > 0) {
+                    equipment.push({
+                        nama: itemName,
+                        jumlah: quantity,
+                        keterangan: description
+                    });
+                }
+            });
+            
+            return equipment;
+        }
+
+        // 7. INITIALIZATION
+        function initializeForm() {
+            // Render facilities with categories
+            const saranaSelect = document.getElementById('sarana');
+            const categories = {};
+            facilities.forEach(f => {
+                if (!categories[f.category]) categories[f.category] = [];
+                categories[f.category].push(f);
+            });
+
+            Object.entries(categories).forEach(([cat, items]) => {
+                const group = document.createElement('optgroup');
+                group.label = cat.charAt(0).toUpperCase() + cat.slice(1) + ' (' + items.length + ')';
+                items.forEach(f => {
+                    const opt = document.createElement('option');
+                    opt.value = f.id;
+                    opt.textContent = f.name;
+                    group.appendChild(opt);
+                });
+                saranaSelect.appendChild(group);
+            });
+
+            // Add first equipment row
+            addEquipmentRow();
+
+            // Initialize signatures
+            initializeSignature('kepsekSignature');
+            initializeSignature('kabidSignature');
+            initializeSignature('penanggungJawabSignature');
+
+            // Set min date to today
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('tanggal').min = today;
+
+            // Set default times
+            document.getElementById('waktu_mulai').value = '08:00';
+            document.getElementById('waktu_selesai').value = '10:00';
+
+            // Event listeners for Friday restrictions
+            document.getElementById('tanggal').addEventListener('change', checkFridayRestrictions);
+            document.getElementById('waktu_mulai').addEventListener('change', checkFridayRestrictions);
+            document.getElementById('waktu_selesai').addEventListener('change', checkFridayRestrictions);
+            document.getElementById('sarana').addEventListener('change', checkFridayRestrictions);
+        }
+
+        // 8. FORM SUBMISSION
+        document.getElementById('bookingForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // QWEN'S SIGNATURE VALIDATION
+            if (!validateAllSignatures()) {
+                alert('❌ Semua tanda tangan digital harus diisi!');
+                return;
+            }
+
+            // QWEN'S FRIDAY VALIDATION
+            const tanggal = new Date(document.getElementById('tanggal').value);
+            const isFriday = tanggal.getDay() === 5;
+            const restrictedSarana = ['aula-smp', 'ruang-serbaguna'];
+            const selectedSarana = document.getElementById('sarana').value;
+            
+            if (isFriday && restrictedSarana.includes(selectedSarana)) {
+                const waktuMulai = document.getElementById('waktu_mulai').value;
+                const waktuSelesai = document.getElementById('waktu_selesai').value;
+                const conflict = isTimeOverlap(waktuMulai, waktuSelesai, '10:30', '13:00');
+                
+                if (conflict) {
+                    alert('❌ Sarana tidak tersedia pada Jumat jam 10.30-13.00 WIB');
+                    return;
+                }
+            }
+
+            // Collect form data
+            const formData = {
+                kegiatan: document.getElementById('kegiatan').value,
+                contact_wa: document.getElementById('contact_wa').value,
+                tanggal: document.getElementById('tanggal').value,
+                waktuMulai: document.getElementById('waktu_mulai').value,
+                waktuSelesai: document.getElementById('waktu_selesai').value,
+                sarana: document.getElementById('sarana').value,
+                equipment: collectEquipmentData(),
+                signatures: {
+                    kepsek: document.getElementById('kepsekSignature').toDataURL(),
+                    kabid: document.getElementById('kabidSignature').toDataURL(),
+                    penanggungJawab: document.getElementById('penanggungJawabSignature').toDataURL()
+                },
+                status: 'pending',
+                timestamp: new Date().toISOString(),
+                version: 'V3-Hybrid-DreamTeam'
+            };
+
+            // Save to localStorage
+            let bookings = JSON.parse(localStorage.getItem('bookings')) || [];
+            bookings.push(formData);
+            localStorage.setItem('bookings', JSON.stringify(bookings));
+
+            alert('🎉 BOOKING BERHASIL!\n\n✅ Form terkirim dengan tanda tangan digital\n✅ Menunggu approval 3 level\n✅ Sistem hybrid Dream Team aktif!');
+            
+            // Redirect to main page
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 2000);
+        });
+
+        // Initialize everything when page loads
+        document.addEventListener('DOMContentLoaded', initializeForm);
+    </script>
+</body>
+</html>
