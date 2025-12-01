@@ -217,16 +217,106 @@
             }
             .header h1, .system-card h3 { color: #ecf0f1; }
         }
+
+        /* BUTTON STYLES (added for consistency) */
+        .btn { 
+            display: inline-block;
+            padding: 10px 18px; 
+            border-radius: 8px; 
+            text-decoration: none; 
+            font-weight: 600; 
+            text-align: center;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 0.95em;
+        }
+        .btn-primary { 
+            background: linear-gradient(135deg, #27ae60, #2ecc71); 
+            color: white; 
+        }
+        .btn-secondary { 
+            background: linear-gradient(135deg, #3498db, #2980b9); 
+            color: white; 
+        }
+        .btn-danger { 
+            background: linear-gradient(135deg, #e74c3c, #c0392b); 
+            color: white; 
+        }
+        .btn:hover { 
+            transform: translateY(-2px); 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2); 
+        }
+
+        /* Feature list styling */
+        .feature-list {
+            color: #5d6d7e; 
+            margin: 15px 0; 
+            padding-left: 20px;
+            list-style: none;
+        }
+        .feature-list li {
+            margin-bottom: 8px;
+            padding-left: 25px;
+            position: relative;
+        }
+        .feature-list li::before {
+            content: '✅';
+            position: absolute;
+            left: 0;
+            color: #27ae60;
+        }
     </style>
 </head>
 <body>
+    <!-- EMBEDDED SYSTEM CONFIG - THE DREAM TEAM MASTER DATA -->
+    <script id="system-config">
+    const SYSTEM_CONFIG = {
+      "metadata": {
+        "version": "3.0.1",
+        "name": "SIF Al Fikri - Dream System",
+        "maintainer": "The Dream Team (Mr. M • Mr. Dseek • Mrs. Qwen)"
+      },
+      "roles": {
+        "pemohon": "Pemohon",
+        "kepsek-sd": "Kepala Sekolah SD",
+        "kepsek-smp": "Kepala Sekolah SMP",
+        "kepsek-sma": "Kepala Sekolah SMA",
+        "koordinator": "Koordinator Umum (Erwinsyah)",
+        "kabid": "Kabid Umum (Hanung Budianto, S.E.)",
+        "admin": "Administrator System"
+      },
+      "facilities": [
+        {"id":"aula-smp","name":"🏛️ Aula SMP"},{"id":"aula-sma","name":"🏛️ Aula SMA"},
+        {"id":"saung-besar","name":"🌴 Saung Besar"},{"id":"saung-kecil","name":"🌴 Saung Kecil"},
+        {"id":"ruang-serbaguna","name":"🧰 Ruang Serbaguna"},
+        {"id":"lapangan-basket","name":"🏀 Lapangan Basket"},{"id":"lapangan-futsal","name":"⚽ Lapangan Futsal"},
+        {"id":"lapangan-voli","name":"🏐 Lapangan Voli"},{"id":"masjid","name":"🕌 Masjid"},
+        {"id":"taman-masjid","name":"🌳 Taman Depan Masjid"},
+        {"id":"perpustakaan-sd","name":"📚 Perpustakaan SD"},{"id":"perpustakaan-smp","name":"📚 Perpustakaan SMP"},
+        {"id":"perpustakaan-sma","name":"📚 Perpustakaan SMA"},
+        {"id":"labkom-sd","name":"💻 Lab Komputer SD"},{"id":"labkom-smp","name":"💻 Lab Komputer SMP"},
+        {"id":"labkom-sma","name":"💻 Lab Komputer SMA"},
+        {"id":"kantin-smp","name":"🍱 Kantin SMP"},{"id":"kantin-sma","name":"🍱 Kantin SMA"}
+      ],
+      "status_labels": {
+        "pending": "Menunggu Kepala Sekolah",
+        "approved-kepsek": "Menunggu Koordinator",
+        "approved-koordinator": "Menunggu Kabid",
+        "approved": "Disetujui",
+        "rejected": "Ditolak"
+      },
+      "friday_restricted": ["aula-smp", "ruang-serbaguna"]
+    };
+    </script>
+
     <div class="container">
         <!-- HEADER -->
         <div class="header">
             <h1>🕌 SISTEM TERPADU SIF AL FIKRI</h1>
             <p>Sekolah Islam Fitrah Al Fikri - Digital Transformation with Barakah</p>
             <div class="spiritual-text">"Bismillāh • Sholawat • Technology with Heart"</div>
-            
+
             <!-- LIVE STATS -->
             <div class="live-stats" id="liveStats">
                 <div class="stat-card">
@@ -332,13 +422,20 @@
     </div>
 
     <script>
+        // SYSTEM CONFIG IS ALREADY LOADED AS window.SYSTEM_CONFIG
+
+        // ENHANCED ROLE MANAGEMENT - NOW USING SYSTEM_CONFIG
+        function getRoleName(role) {
+            return SYSTEM_CONFIG.roles[role] || role;
+        }
+
         // ENHANCED SYSTEM MANAGEMENT
         const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-        
+
         // Update UI based on user session
         function updateUserInterface() {
             const userGreeting = document.getElementById('userGreeting');
-            
+
             if (currentUser) {
                 userGreeting.innerHTML = `
                     <strong>👤 User:</strong> ${currentUser.username} | 
@@ -346,12 +443,13 @@
                     <strong>🕒 Login:</strong> ${new Date(currentUser.loggedInAt).toLocaleString('id-ID')}
                     <br><small style="color: #27ae60;">✅ Session aktif - Sistem siap digunakan</small>
                 `;
-                
+
                 // Show admin features if applicable
                 if (currentUser.role === 'admin' || currentUser.role === 'kabid') {
-                    document.querySelector('.quick-access-grid').innerHTML += `
-                        <a href="analytics.html" class="btn btn-secondary">📈 Analytics</a>
-                    `;
+                    const grid = document.querySelector('.quick-access-grid');
+                    if (!grid.querySelector('a[href="analytics.html"]')) {
+                        grid.innerHTML += `<a href="analytics.html" class="btn btn-secondary">📈 Analytics</a>`;
+                    }
                 }
             } else {
                 userGreeting.innerHTML = '🔒 Silakan login untuk mengakses sistem lengkap | <small>Gunakan menu Login System di bawah</small>';
@@ -363,11 +461,15 @@
             const bookings = JSON.parse(localStorage.getItem('bookings')) || [];
             const reports = JSON.parse(localStorage.getItem('reports')) || [];
             const users = JSON.parse(localStorage.getItem('users')) || [];
-            
+
             const activeBookings = bookings.filter(b => b.status === 'approved').length;
-            const pendingApprovals = bookings.filter(b => b.status === 'pending').length;
+            const pendingApprovals = bookings.filter(b => 
+                b.status === 'pending' || 
+                b.status === 'approved-kepsek' || 
+                b.status === 'approved-koordinator'
+            ).length;
             const totalUsers = users.length;
-            
+
             document.getElementById('activeBookings').textContent = activeBookings;
             document.getElementById('pendingApprovals').textContent = pendingApprovals;
             document.getElementById('totalUsers').textContent = totalUsers || '5+';
@@ -378,28 +480,14 @@
             const systemStatus = document.getElementById('systemStatus');
             const now = new Date();
             const hours = now.getHours();
-            
+
             if (hours >= 8 && hours <= 17) {
-                systemStatus.innerHTML = '🟢 Sistem Online - Version 3.0 Barakah Edition';
+                systemStatus.innerHTML = `🟢 Sistem Online - Version ${SYSTEM_CONFIG.metadata.version}`;
                 systemStatus.style.color = '#27ae60';
             } else {
-                systemStatus.innerHTML = '🌙 Sistem Online (Off-peak) - Version 3.0 Barakah Edition';
+                systemStatus.innerHTML = `🌙 Sistem Online (Off-peak) - Version ${SYSTEM_CONFIG.metadata.version}`;
                 systemStatus.style.color = '#f39c12';
             }
-        }
-
-        // ENHANCED ROLE MANAGEMENT
-        function getRoleName(role) {
-            const roleNames = {
-                'pemohon': 'Pemohon', 
-                'kepsek-sd': 'Kepala Sekolah SD', 
-                'kepsek-smp': 'Kepala Sekolah SMP', 
-                'kepsek-sma': 'Kepala Sekolah SMA',
-                'koordinator': 'Koordinator Umum (Erwinsyah)', 
-                'kabid': 'Kabid Umum (Hanung Budianto, S.E.)',
-                'admin': 'Administrator System'
-            };
-            return roleNames[role] || role;
         }
 
         // SESSION MANAGEMENT
@@ -417,7 +505,7 @@
                 const loginTime = new Date(currentUser.loggedInAt);
                 const now = new Date();
                 const hoursDiff = (now - loginTime) / (1000 * 60 * 60);
-                
+
                 if (hoursDiff > 24) {
                     clearSession();
                     alert('🕒 Session expired. Silakan login kembali.');
@@ -431,13 +519,13 @@
             updateLiveStats();
             checkSystemStatus();
             checkSessionAge();
-            
+
             // Auto-refresh stats every 30 seconds
             setInterval(updateLiveStats, 30000);
-            
+
             console.log('🕌 SIF Al Fikri System - Status: LIVE');
             console.log('🌟 Special Thanks: الله • Nabi Muhammad SAW • The Dream Team');
-            console.log('🚀 Version: 3.0 - Barakah Edition (Enhanced)');
+            console.log('🚀 Version:', SYSTEM_CONFIG.metadata.version);
             console.log('📧 Support: bagianumum@alfikri.sch.id');
         });
     </script>
