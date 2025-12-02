@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Sarana - SIF Al Fikri</title>
+    <link rel="icon" href="https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/svg/1f4d1.svg">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            overflow: hidden;
+        }
+        .header {
+            background: white;
+            padding: 25px;
+            text-align: center;
+            border-bottom: 1px solid #eee;
+        }
+        .header h1 {
+            color: #27ae60;
+            font-size: 2em;
+            margin-bottom: 8px;
+        }
+        .spiritual-text {
+            margin: 15px 0;
+        }
+        .allahu-akbar {
+            font-size: 2.4em;
+            font-weight: bold;
+            color: #d4af37;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            direction: rtl;
+            unicode-bidi: bidi-override;
+            margin-bottom: 10px;
+        }
+        .bismillah, .bi-idznillah {
+            font-size: 1.3em;
+            direction: rtl;
+            unicode-bidi: bidi-override;
+            margin: 4px 0;
+            color: #2c3e50;
+        }
+        .special-thanks {
+            background: #fff8e1;
+            padding: 18px;
+            text-align: center;
+            font-size: 0.95em;
+            border-bottom: 1px solid #ffd54f;
+        }
+        .allah-gold {
+            color: #d4af37;
+            font-weight: bold;
+            font-size: 2em;
+            margin: 8px 0;
+            display: block;
+        }
+        .shalawat-green {
+            color: #27ae60;
+            margin: 12px 0;
+            font-weight: 500;
+            line-height: 1.5;
+        }
+        .form-section, .detail-section {
+            padding: 25px;
+        }
+        .detail-section {
+            display: none;
+            background: #f9fbfd;
+            border-top: 2px dashed #ddd;
+        }
+        .form-group { margin: 20px 0; }
+        label { display: block; margin-bottom: 8px; font-weight: 600; color: #2c3e50; }
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+        }
+        #signatureCanvas {
+            width: 100%;
+            height: 120px;
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 8px;
+            display: block;
+        }
+        .btn, .btn-clear {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .btn {
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            color: white;
+            width: 100%;
+            font-size: 1.05em;
+        }
+        .btn-clear {
+            background: #e74c3c;
+            color: white;
+            display: inline-block;
+        }
+        .info-box {
+            background: #ffeaa7;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #fdcb6e;
+            font-size: 0.95em;
+            display: none;
+        }
+        .detail-item {
+            margin: 12px 0;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        .detail-label { font-weight: bold; color: #2c3e50; }
+        .signature-preview { margin-top: 15px; }
+        .signature-preview img {
+            max-width: 200px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            background: white;
+            padding: 6px;
+        }
+        .action-btns {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .action-btn {
+            padding: 10px 18px;
+            margin: 6px;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .btn-whatsapp { background: #128C7E; }
+        .btn-email { background: #DB4437; }
+        .btn-new { background: #95a5a6; }
+        .footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 0.85em;
+            color: #7f8c8d;
+            border-top: 1px solid #eee;
+        }
+        @media print {
+            .btn, .action-btn, .footer, .header {
+                display: none !important;
+            }
+            body { background: white; }
+            .container { box-shadow: none; border: 1px solid #000; }
+            .detail-section { display: block !important; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- HEADER SPIRITUAL -->
+        <div class="header">
+            <h1>🎓 SISTEM BOOKING SARANA</h1>
+            <p>SIF Al Fikri — Digital with Barakah</p>
+            <div class="spiritual-text">
+                <div class="allahu-akbar">اللهُ أَكْبَرُ</div>
+                <div class="bismillah">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
+                <div class="bi-idznillah">بِإِذْنِ اللَّهِ</div>
+            </div>
+        </div>
+
+        <!-- SPECIAL THANKS -->
+        <div class="special-thanks">
+            <span class="allah-gold">الله</span>
+            <div class="shalawat-green">
+                Shalawat dan Salam kepada Baginda Rasulullah Nabiyyuna Muhammad Shalallahu ‘alaihi wasallam
+            </div>
+            <em>The Dream Team: Mr. M · Mr. Dseek · Ms. Qwen (Bawel)</em>
+        </div>
+
+        <!-- FORM SECTION -->
+        <div class="form-section" id="formSection">
+            <div class="info-box" id="infoJumat"></div>
+
+            <form id="bookingForm">
+                <div class="form-group">
+                    <label>👤 Nama Pemohon *</label>
+                    <input type="text" id="pemohon" required placeholder="Nama lengkap">
+                </div>
+                <div class="form-group">
+                    <label>📱 WhatsApp *</label>
+                    <input type="tel" id="wa" required placeholder="08123456789">
+                </div>
+                <div class="form-group">
+                    <label>📧 Email</label>
+                    <input type="email" id="email" placeholder="email@domain.com">
+                </div>
+                <div class="form-group">
+                    <label>🎯 Kegiatan *</label>
+                    <input type="text" id="kegiatan" required placeholder="Workshop, Rapat, dll">
+                </div>
+                <div class="form-group">
+                    <label>📅 Tanggal *</label>
+                    <input type="date" id="tanggal" required>
+                </div>
+                <div class="form-group">
+                    <label>⏰ Waktu Mulai *</label>
+                    <input type="time" id="waktuMulai" required>
+                </div>
+                <div class="form-group">
+                    <label>⏰ Waktu Selesai *</label>
+                    <input type="time" id="waktuSelesai" required>
+                </div>
+                <div class="form-group">
+                    <label>🏛️ Sarana *</label>
+                    <select id="sarana" required>
+                        <option value="">-- Pilih --</option>
+                        <optgroup label="Aula & Serbaguna">
+                            <option value="Aula SMP">Aula SMP</option>
+                            <option value="Aula SMA">Aula SMA</option>
+                            <option value="Serbaguna">Serbaguna</option>
+                        </optgroup>
+                        <optgroup label="Kelas">
+                            <option value="Kelas 7A">Kelas 7A</option>
+                            <option value="Kelas 7B">Kelas 7B</option>
+                            <option value="Kelas 7C">Kelas 7C</option>
+                            <option value="Kelas 8A">Kelas 8A</option>
+                            <option value="Kelas 8B">Kelas 8B</option>
+                            <option value="Kelas 8C">Kelas 8C</option>
+                            <option value="Kelas 9A">Kelas 9A</option>
+                            <option value="Kelas 9B">Kelas 9B</option>
+                            <option value="Kelas 9C">Kelas 9C</option>
+                        </optgroup>
+                        <optgroup label="Perpustakaan">
+                            <option value="Perpustakaan SD">Perpustakaan SD</option>
+                            <option value="Perpustakaan SMP">Perpustakaan SMP</option>
+                            <option value="Perpustakaan SMA">Perpustakaan SMA</option>
+                        </optgroup>
+                        <optgroup label="Lab">
+                            <option value="Lab Komputer SD">Lab Komputer SD</option>
+                            <option value="Lab Komputer SMP">Lab Komputer SMP</option>
+                            <option value="Lab Komputer SMA">Lab Komputer SMA</option>
+                            <option value="Lab IPA">Lab IPA</option>
+                        </optgroup>
+                        <optgroup label="Ibadah & Outdoor">
+                            <option value="Masjid">Masjid</option>
+                            <option value="Taman Masjid">Taman Masjid</option>
+                            <option value="Saung Besar">Saung Besar</option>
+                            <option value="Saung Kecil">Saung Kecil</option>
+                        </optgroup>
+                        <optgroup label="Lapangan">
+                            <option value="Lapangan Basket">Lapangan Basket</option>
+                            <option value="Lapangan Futsal">Lapangan Futsal</option>
+                            <option value="Lapangan Voli">Lapangan Voli</option>
+                        </optgroup>
+                        <optgroup label="Kantin">
+                            <option value="Kantin SMP">Kantin SMP</option>
+                            <option value="Kantin SMA">Kantin SMA</option>
+                        </optgroup>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>📦 Inventaris (opsional)</label>
+                    <textarea id="inventaris" rows="2" placeholder="Contoh: Proyektor, meja, kursi"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>✍️ Tanda Tangan Digital *</label>
+                    <canvas id="signatureCanvas"></canvas>
+                    <button type="button" class="btn-clear" id="clearBtn">🧹 Hapus</button>
+                </div>
+                <button type="submit" class="btn">✅ Ajukan Booking</button>
+            </form>
+        </div>
+
+        <!-- DETAIL SECTION (hidden by default) -->
+        <div class="detail-section" id="detailSection">
+            <h2 style="text-align:center; margin-bottom:20px; color:#27ae60;">📄 Bukti Booking Anda</h2>
+            <div id="bookingOutput"></div>
+            <div class="signature-preview" id="signaturePreview" style="display:none;"></div>
+            <div class="action-btns">
+                <button class="action-btn btn-whatsapp" id="waBtn">💬 Kirim ke Pak Erwin</button>
+                <button class="action-btn btn-email" id="emailBtn">📧 Kirim ke Email</button>
+                <button class="action-btn" onclick="window.print()" style="background:#3498db;">🖨️ Cetak / PDF</button>
+                <button class="action-btn btn-new" id="newBtn">➕ Booking Baru</button>
+            </div>
+        </div>
+
+        <div class="footer">
+            © 2025 SIF Al Fikri | Booking otomatis dikirim ke Pak Erwin via WhatsApp
+        </div>
+    </div>
+
+    <script>
+        // === CANVAS SIGNATURE ===
+        const canvas = document.getElementById('signatureCanvas');
+        const ctx = canvas.getContext('2d');
+        let isDrawing = false;
+
+        function resizeCanvas() {
+            const ratio = Math.max(window.devicePixelRatio || 1, 1);
+            canvas.width = canvas.clientWidth * ratio;
+            canvas.height = canvas.clientHeight * ratio;
+            ctx.scale(ratio, ratio);
+            ctx.lineWidth = 2;
+            ctx.lineCap = 'round';
+            ctx.strokeStyle = '#2c3e50';
+            clearSignature();
+        }
+        window.addEventListener('load', resizeCanvas);
+        window.addEventListener('resize', resizeCanvas);
+
+        function getPos(e, isTouch = false) {
+            const rect = canvas.getBoundingClientRect();
+            if (isTouch) {
+                return {
+                    x: (e.clientX - rect.left) * (canvas.width / rect.width),
+                    y: (e.clientY - rect.top) * (canvas.height / rect.height)
+                };
+            } else {
+                return {
+                    x: e.offsetX * (canvas.width / rect.width),
+                    y: e.offsetY * (canvas.height / rect.height)
+                };
+            }
+        }
+
+        canvas.addEventListener('mousedown', (e) => {
+            isDrawing = true;
+            ctx.beginPath();
+            const pos = getPos(e);
+            ctx.moveTo(pos.x, pos.y);
+        });
+        canvas.addEventListener('mousemove', (e) => {
+            if (!isDrawing) return;
+            const pos = getPos(e);
+            ctx.lineTo(pos.x, pos.y);
+            ctx.stroke();
+        });
+        canvas.addEventListener('mouseup', () => isDrawing = false);
+        canvas.addEventListener('mouseout', () => isDrawing = false);
+
+        // Touch
+        canvas.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            isDrawing = true;
+            ctx.beginPath();
+            const touch = e.touches[0];
+            const rect = canvas.getBoundingClientRect();
+            ctx.moveTo(
+                (touch.clientX - rect.left) * (canvas.width / rect.width),
+                (touch.clientY - rect.top) * (canvas.height / rect.height)
+            );
+        });
+        canvas.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            if (!isDrawing) return;
+            const touch = e.touches[0];
+            const rect = canvas.getBoundingClientRect();
+            ctx.lineTo(
+                (touch.clientX - rect.left) * (canvas.width / rect.width),
+                (touch.clientY - rect.top) * (canvas.height / rect.height)
+            );
+            ctx.stroke();
+        });
+        canvas.addEventListener('touchend', () => isDrawing = false);
+
+        function clearSignature() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+        document.getElementById('clearBtn').addEventListener('click', clearSignature);
+
+        // === VALIDASI ===
+        function isValidJam(waktu) {
+            if (!waktu) return false;
+            const [h, m] = waktu.split(':').map(Number);
+            const total = h * 60 + m;
+            return total >= 450 && total <= 960; // 07:30 (450) to 16:00 (960)
+        }
+
+        function cekJumat(tgl, mulai, selesai, sarana) {
+            const hari = new Date(tgl).getDay();
+            if (hari !== 5) return true;
+            const larangan = ["Aula SMP", "Aula SMA", "Serbaguna"];
+            if (!larangan.includes(sarana)) return true;
+            const toMin = t => {
+                const [h, m] = t.split(':').map(Number);
+                return h * 60 + m;
+            };
+            const m1 = toMin(mulai), m2 = toMin(selesai);
+            const bentrok = m1 < 780 && m2 > 630; // 13:00 = 780, 10:30 = 630
+            if (bentrok) {
+                alert(`❌ "${sarana}" tidak tersedia Jumat 10.30–13.00 WIB.\nSarana lain masih bisa dipakai.`);
+                return false;
+            }
+            return true;
+        }
+
+        document.getElementById('tanggal').addEventListener('change', function() {
+            const hari = new Date(this.value).getDay();
+            document.getElementById('infoJumat').style.display = hari === 5 ? 'block' : 'none';
+            if (hari === 5) {
+                document.getElementById('infoJumat').innerHTML = `
+                    <strong>📌 PERHATIAN JUMAT:</strong><br>
+                    • Aula & Serbaguna: <strong>TIDAK TERSEDIA</strong> 10.30–13.00 WIB<br>
+                    • Sarana lain: <strong>BOLEH</strong> sepanjang hari
+                `;
+            }
+        });
+
+        // === SUBMIT ===
+        document.getElementById('bookingForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const pemohon = document.getElementById('pemohon').value.trim();
+            let wa = document.getElementById('wa').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const kegiatan = document.getElementById('kegiatan').value.trim();
+            const tanggal = document.getElementById('tanggal').value;
+            const waktuMulai = document.getElementById('waktuMulai').value;
+            const waktuSelesai = document.getElementById('waktuSelesai').value;
+            const sarana = document.getElementById('sarana').value;
+            const inventaris = document.getElementById('inventaris').value.trim();
+
+            if (!pemohon || !wa || !kegiatan || !tanggal || !waktuMulai || !waktuSelesai || !sarana) {
+                alert('❌ Isi semua field wajib.');
+                return;
+            }
+
+            if (!isValidJam(waktuMulai) || !isValidJam(waktuSelesai)) {
+                alert('⏰ Jam hanya 07.30–16.00 WIB.');
+                return;
+            }
+
+            if (!cekJumat(tanggal, waktuMulai, waktuSelesai, sarana)) return;
+
+            // Format WA
+            if (wa.startsWith('0')) wa = '62' + wa.substring(1);
+
+            // Cek signature
+            const blank = document.createElement('canvas');
+            blank.width = canvas.width; blank.height = canvas.height;
+            if (canvas.toDataURL() === blank.toDataURL()) {
+                alert('✍️ Beri tanda tangan dulu!');
+                return;
+            }
+
+            // Simpan
+            const booking = {
+                id: 'SIF-' + Date.now().toString(36).toUpperCase(),
+                pemohon, wa, email: email || '-', kegiatan,
+                tanggal, waktuMulai, waktuSelesai, sarana,
+                inventaris: inventaris || '-',
+                signature: canvas.toDataURL(),
+                createdAt: new Date().toLocaleString('id-ID')
+            };
+
+            localStorage.setItem('latestBooking', JSON.stringify(booking));
+            const bookings = JSON.parse(localStorage.getItem('bookings')) || [];
+            bookings.push(booking);
+            localStorage.setItem('bookings', JSON.stringify(bookings));
+
+            // Tampilkan detail
+            document.getElementById('formSection').style.display = 'none';
+            document.getElementById('detailSection').style.display = 'block';
+
+            const dateStr = new Date(tanggal).toLocaleDateString('id-ID', {
+                weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+            });
+            document.getElementById('bookingOutput').innerHTML = `
+                <div class="detail-item"><span class="detail-label">ID Booking:</span> ${booking.id}</div>
+                <div class="detail-item"><span class="detail-label">Pemohon:</span> ${pemohon}</div>
+                <div class="detail-item"><span class="detail-label">WhatsApp:</span> ${wa}</div>
+                <div class="detail-item"><span class="detail-label">Email:</span> ${booking.email}</div>
+                <div class="detail-item"><span class="detail-label">Kegiatan:</span> ${kegiatan}</div>
+                <div class="detail-item"><span class="detail-label">Tanggal:</span> ${dateStr}</div>
+                <div class="detail-item"><span class="detail-label">Waktu:</span> ${waktuMulai} – ${waktuSelesai} WIB</div>
+                <div class="detail-item"><span class="detail-label">Sarana:</span> ${sarana}</div>
+                <div class="detail-item"><span class="detail-label">Inventaris:</span> ${booking.inventaris}</div>
+                <div class="detail-item"><span class="detail-label">Diajukan:</span> ${booking.createdAt}</div>
+            `;
+
+            document.getElementById('signaturePreview').innerHTML = `
+                <div class="detail-label">Tanda Tangan:</div>
+                <img src="${booking.signature}" style="max-width:200px; border:1px solid #ddd; border-radius:4px;">
+            `;
+            document.getElementById('signaturePreview').style.display = 'block';
+
+            // Auto-kirim WA
+            const msg = `Assalamu'alaikum Pak Erwin,\n\nAda booking baru:\n• ID: ${booking.id}\n• Pemohon: ${pemohon}\n• Kegiatan: ${kegiatan}\n• Tanggal: ${dateStr}\n• Waktu: ${waktuMulai}-${waktuSelesai}\n• Sarana: ${sarana}`;
+            window.open(`https://wa.me/628886183954?text=${encodeURIComponent(msg)}`, '_blank');
+        });
+
+        // Tombol aksi di detail
+        document.getElementById('waBtn').onclick = () => {
+            const b = JSON.parse(localStorage.getItem('latestBooking'));
+            const dateStr = new Date(b.tanggal).toLocaleDateString('id-ID', {
+                weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+            });
+            const msg = `Assalamu'alaikum Pak Erwin,\n\nDetail booking:\n• ID: ${b.id}\n• Pemohon: ${b.pemohon}\n• Kegiatan: ${b.kegiatan}\n• Tanggal: ${dateStr}\n• Waktu: ${b.waktuMulai}-${b.waktuSelesai}\n• Sarana: ${b.sarana}`;
+            window.open(`https://wa.me/628886183954?text=${encodeURIComponent(msg)}`, '_blank');
+        };
+
+        document.getElementById('emailBtn').onclick = () => {
+            const b = JSON.parse(localStorage.getItem('latestBooking'));
+            const subj = `Booking SIF - ${b.kegiatan}`;
+            const body = `Pemohon: ${b.pemohon}\nWA: ${b.wa}\nKegiatan: ${b.kegiatan}\nTanggal: ${b.tanggal}\nWaktu: ${b.waktuMulai}-${b.waktuSelesai}\nSarana: ${b.sarana}`;
+            window.open(`mailto:teknisi@alfikri.sch.id?subject=${encodeURIComponent(subj)}&body=${encodeURIComponent(body)}`, '_blank');
+        };
+
+        document.getElementById('newBtn').onclick = () => {
+            document.getElementById('detailSection').style.display = 'none';
+            document.getElementById('formSection').style.display = 'block';
+            clearSignature();
+        };
+
+        document.getElementById('tanggal').min = new Date().toISOString().split('T')[0];
+    </script>
+</body>
+</html>
